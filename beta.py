@@ -12,10 +12,10 @@ DATA = m.coord_data_like('/Users/mihail/Desktop/Ocean_waves_project/GRD/pacific4
 
 
 print(np.shape(DATA))
-DATAN = m.distance_data(DATA, 37.61, 55.75)
+DATAN = m.distance_data(DATA, -20.54, 175.393)
 print(np.shape(DATAN))
 
 print(DATAN[0])
 
-im = plt.imshow(DATAN, cmap=m.cmap5)
+im = plt.imshow(DATAN, cmap='bwr')
 plt.show()

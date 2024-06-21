@@ -63,10 +63,10 @@ def paint_map(link):
 	plt.show()
 	
 
-def distance(lon1, lat1, lon2, lat2):
+def distance(lat1, lon1, lat2, lon2):
     geod = Geod(ellps='WGS84')
-    point1 = (lon1, lat1)
-    point2 = (lon2, lat2)
+    point1 = (lat1, lon1)
+    point2 = (lat2, lon2)
 
     azimuth1, azimuth2, distance = geod.inv(*point1, *point2)
     return distance / 1000
@@ -82,10 +82,10 @@ def coord_data_like(link):
 	
  
 def distance_data(DATA, *point):
-    lon, lat = point
+    lat, lon = point
     a, b, c = np.shape(DATA)
     New_data = np.full((a, b), np.nan) #массив той же размерности 
     for i in range(a):
         for q in range(b):
-            New_data[i, q] = distance(DATA[i, q, 0], DATA[i, q, 1], lon, lat)
+            New_data[i, q] = distance(DATA[i, q, 0], DATA[i, q, 1], lat, lon)
     return New_data
