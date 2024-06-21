@@ -65,8 +65,8 @@ def paint_map(link):
 
 def distance(lat1, lon1, lat2, lon2):
     geod = Geod(ellps='WGS84')
-    point1 = (lat1, lon1)
-    point2 = (lat2, lon2)
+    point1 = (lon1, lat1)
+    point2 = (lon2, lat2)
 
     azimuth1, azimuth2, distance = geod.inv(*point1, *point2)
     return distance / 1000
@@ -74,7 +74,7 @@ def distance(lat1, lon1, lat2, lon2):
    
 def coord_data_like(link):
 	DATA, limits, size = give_description(link)
-	lat_lims = np.linspace(limits[0], limits[1], size[0])
+	lat_lims = np.linspace(limits[1], limits[0], size[0]) #чтобы массив был сверху вниз
 	lon_lims = np.linspace(limits[2], limits[3], size[1])
 	DATA_NEW = [(i, q) for i in lat_lims for q in lon_lims]
 	DATA_NEW = np.array(DATA_NEW).reshape(size[0], size[1], 2)
