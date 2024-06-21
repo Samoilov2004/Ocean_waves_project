@@ -82,5 +82,10 @@ def coord_data_like(link):
 	
  
 def distance_data(DATA, *point):
-	lon, lat = point
-	print(DATA[0][0])
+    lon, lat = point
+    a, b, c = np.shape(DATA)
+    New_data = np.full((a, b), np.nan) #массив той же размерности 
+    for i in range(a):
+        for q in range(b):
+            New_data[i, q] = distance(DATA[i, q, 0], DATA[i, q, 1], lon, lat)
+    return New_data
