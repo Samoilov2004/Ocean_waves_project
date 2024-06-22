@@ -54,9 +54,35 @@ def paint(DATA):
 	im = ax.imshow(DATA, cmap='binary') 
 	fig.colorbar(im, ax=ax)
 	plt.show()
+	
+
+def paint_circulus(DATA):
+    fig, ax = plt.subplots()
+
+    x = np.arange(DATA.shape[1])
+    y = np.arange(DATA.shape[0])
+    X, Y = np.meshgrid(x, y)
+ 
+    max_value = np.amax(DATA) * 0.8
+    num_contours = np.arange(0, max_value, 5)
+
+    CS = ax.contour(X, Y, DATA, num_contours, colors = 'red')
+
+    im = ax.imshow(DATA, cmap='binary')
+    fig.colorbar(im, ax=ax)
+    plt.show()
+    
+    
+def paint_scores(DATA):
+	None
 
 		
 def distance(lat1, lon1, lat2, lon2):
+	#работает для ввода долготы в 360
+    if lon1 > 180:
+        lon1 = lon1-360
+    if lon2 > 180:
+        lon2 = lon2-360
     geod = Geod(ellps='WGS84')
     point1 = (lon1, lat1)
     point2 = (lon2, lat2)
@@ -85,19 +111,20 @@ def distance_data(DATA, *point):
    
    
 def triangle_time(link, lat, lon, lat_volcano=-20.5333, lon_volcano=184.6333):
-	v = 310
+	v = 1116 #310 м/с
 	DATA, limits, size = get_description(link)
 	
 	COORD_DATA = coord_data_like(link)
 	DATA_AIR = distance_data(COORD_DATA, lat_volcano, lon_volcano) / v
 	return DATA + DATA_AIR
 
-def accuracy_data(DATA, type=2: time=0):
+
+def accuracy_data(DATA, type=2, time=0):
 	if type == 1:
-        return np.abs(data - time)
-    else:
-    	abs_data = np.abs(data - time)
-        return (abs_data) ** type
+		return np.abs(data - time)
+	else:
+		abs_data = np.abs(data - time)
+		return (abs_data) ** type
        
 
 		
