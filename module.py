@@ -15,43 +15,29 @@ def cmap5():
     return my_cmap
 cmap5 = cmap5()
 
-   
-def give_description(link):
-	#строит карту без ничего
-    f = open(link, 'r')
-    # Пропуск первой строки (DSAA)
-    f.readline()
 
-    # Чтение размеров матрицы
-    cols, rows = map(int, f.readline().split())
+def get_description(file_path):
+    with open(file_path, 'r') as f:
+        f.readline()  # Пропуск первой строки (DSAA)
 
-    # Чтение границ долготы
-    lon_min, lon_max = map(float, f.readline().split())
+        n_cols, n_rows = map(int, f.readline().split())
+        lon_min, lon_max = map(float, f.readline().split())
+        lat_min, lat_max = map(float, f.readline().split())
+        min_depth, max_depth = map(float, f.readline().split())
 
-    # Чтение границ широты
-    lat_min, lat_max = map(float, f.readline().split())
+        data = [float(value) for value in f.read().split()]
+        data = np.array(data).reshape(n_rows, n_cols)
+        data = np.flip(data, axis=0)  # дело в том что в файле строки снизу вверх идут и поэтому так пишем
 
-    # Чтение минимума и максимума чисел в матрице
-    min_dep, max_dep = map(float, f.readline().split())
+    return data, [lat_min, lat_max, lon_min, lon_max], [n_rows, n_cols]
 
-    # Чтение матрицы
-    DATA = []
-    lines = f.readlines()
-    for line in lines:
-        for i in line.split():
-            DATA.append(float(i))
-    DATA = np.array(DATA).reshape(rows, cols)
-    DATA = np.flip(DATA, axis=0) #дело в том что в файле строки снизу вверх идут и поэтому так пишем
-    f.close()
-    return [DATA, [lat_min, lat_max, lon_min, lon_max], [rows, cols]]
-   
 
-give_data = lambda link: give_description(link)[0]
-	
-	
+get_data = lambda file_path: get_description(file_path)[0]
+
+
 def paint_map(link):
-	DATA = give_data(link)
-	limits = [give_description(link)[1][i] for i in [2, 3, 0, 1]] #сначала прописывает долготу на осях, потом широту
+	DATA = get_data(link)
+	limits = [get_description(link)[1][i] for i in [2, 3, 0, 1]] #сначала прописывает долготу на осях, потом широту
 	max_dep = DATA.max()	
 	fig, ax = plt.subplots(figsize=(12, 7)) 
 	im = ax.imshow(DATA, cmap=cmap5, vmin=-max_dep, vmax=max_dep, extent = limits) #extent создает границы, а минимум и максимум для нормального отображения цветов
@@ -62,7 +48,14 @@ def paint_map(link):
 	ax.set_xlabel('Longitude')
 	plt.show()
 	
+	
+def paint(DATA):
+	fig, ax = plt.subplots(figsize=(12, 7)) 
+	im = ax.imshow(DATA, cmap='binary') 
+	fig.colorbar(im, ax=ax)
+	plt.show()
 
+		
 def distance(lat1, lon1, lat2, lon2):
     geod = Geod(ellps='WGS84')
     point1 = (lon1, lat1)
@@ -73,7 +66,7 @@ def distance(lat1, lon1, lat2, lon2):
    
    
 def coord_data_like(link):
-	DATA, limits, size = give_description(link)
+	DATA, limits, size = get_description(link)
 	lat_lims = np.linspace(limits[1], limits[0], size[0]) #чтобы массив был сверху вниз
 	lon_lims = np.linspace(limits[2], limits[3], size[1])
 	DATA_NEW = [(i, q) for i in lat_lims for q in lon_lims]
@@ -89,3 +82,23 @@ def distance_data(DATA, *point):
         for q in range(b):
             New_data[i, q] = distance(DATA[i, q, 0], DATA[i, q, 1], lat, lon)
     return New_data
+   
+   
+def triangle_time(link, lat, lon, lat_volcano=-20.5333, lon_volcano=184.6333):
+	v = 310
+	DATA, limits, size = get_description(link)
+	
+	COORD_DATA = coord_data_like(link)
+	DATA_AIR = distance_data(COORD_DATA, lat_volcano, lon_volcano) / v
+	return DATA + DATA_AIR
+
+def accuracy_data(DATA, type=2: time=0):
+	if type == 1:
+        return np.abs(data - time)
+    else:
+    	abs_data = np.abs(data - time)
+        return (abs_data) ** type
+       
+
+		
+	
