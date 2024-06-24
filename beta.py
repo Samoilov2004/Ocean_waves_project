@@ -2,7 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap as LSC
 from pyproj import Geod
-import module as m
+import module_ref as mf
+import modele as m
 
 m.paint_map('/Users/mihail/Desktop/Ocean_waves_project/GRD/pacific4min.grd')
 

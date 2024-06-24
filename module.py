@@ -16,6 +16,9 @@ def cmap5():
 cmap5 = cmap5()
 
 
+#cmap6 = 
+
+
 def get_description(file_path):
     with open(file_path, 'r') as f:
         f.readline()  # Пропуск первой строки (DSAA)
