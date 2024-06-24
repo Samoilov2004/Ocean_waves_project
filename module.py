@@ -16,7 +16,13 @@ def cmap5():
 cmap5 = cmap5()
 
 
-#cmap6 = 
+def cmap_final():
+	# Создаем цветовую карту
+	colors_list = [[0, 'black'], [0.001, 'white'], [1, 'red']]
+	cmap = LSC.from_list('custom_cmap', colors_list)
+	return cmap_final
+
+cmap1 = cmap_final()
 
 
 def get_description(file_path):
@@ -77,7 +83,10 @@ def paint_circulus(DATA):
     
     
 def paint_scores(DATA):
-	None
+	DATA /= DATA.max()
+	plt.imshow(y, cmap=cmap_final, vmin=0, vmax=1)
+	plt.colorbar()
+	plt.show()
 
 		
 def distance(lat1, lon1, lat2, lon2):
